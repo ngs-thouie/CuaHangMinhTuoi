@@ -59,7 +59,7 @@ export const CheckoutPage: React.FC = () => {
         deliveryTime: formData.deliveryTime,
         deliveryAddress: formData.deliveryAddress,
         paymentStatus: 'pending',
-        paymentMethod: 'cod',
+        paymentMethod: 'cash',
         notes: formData.notes,
         status: 'pending'
       }

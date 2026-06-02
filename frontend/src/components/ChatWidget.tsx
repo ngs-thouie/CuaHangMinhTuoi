@@ -20,7 +20,7 @@ export const ChatWidget: React.FC = () => {
 
   // Polling for messages
   useEffect(() => {
-    let interval: NodeJS.Timeout
+    let interval: ReturnType<typeof setInterval>
     
     if (user && isOpen && user.role === 'customer') {
       const fetchMsgs = async () => {

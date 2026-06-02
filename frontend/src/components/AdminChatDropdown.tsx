@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useRef } from 'react'
-import { messageService, Message } from '../services/messageService'
+import React, { useState, useEffect } from 'react'
+import { messageService } from '../services/messageService'
 import { useAuth } from '../hooks/useAuth'
 
 interface AdminChatDropdownProps {
