@@ -43,7 +43,7 @@ app.use('/api/notifications', notificationRoutes)
 // MongoDB Connection
 const connectDB = async () => {
   try {
-    const mongoUri = process.env.MONGODB_URI || 'mongodb://localhost:27017/cuahangminhttuoi'
+    const mongoUri = process.env.MONGODB_URI || process.env.MONGO_URI || 'mongodb://localhost:27017/cuahangminhttuoi'
     await mongoose.connect(mongoUri)
     console.log('MongoDB connected successfully')
   } catch (error) {
