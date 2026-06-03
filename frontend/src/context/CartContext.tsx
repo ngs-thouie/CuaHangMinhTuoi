@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react'
 import { CartItem, Product } from '../types'
+import { authService } from '../services/authService'
 
 interface CartContextType {
   items: CartItem[]
@@ -13,24 +14,38 @@ interface CartContextType {
 
 const CartContext = createContext<CartContextType | undefined>(undefined)
 
-export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [items, setItems] = useState<CartItem[]>([])
+const getCartKey = () => {
+  const user = authService.getCurrentUser()
+  return `cart_${user?.id || 'guest'}`
+}
 
-  // Load cart from localStorage
+export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const [items, setItems] = useState<CartItem[]>(() => {
+    try {
+      const savedCart = localStorage.getItem(getCartKey())
+      return savedCart ? JSON.parse(savedCart) : []
+    } catch {
+      return []
+    }
+  })
+
+  // Listen for auth changes to switch cart
   useEffect(() => {
-    const savedCart = localStorage.getItem('cart')
-    if (savedCart) {
+    const handleAuthChange = () => {
       try {
-        setItems(JSON.parse(savedCart))
-      } catch (error) {
-        console.error('Failed to load cart from localStorage:', error)
+        const savedCart = localStorage.getItem(getCartKey())
+        setItems(savedCart ? JSON.parse(savedCart) : [])
+      } catch {
+        setItems([])
       }
     }
+    window.addEventListener('auth-change', handleAuthChange)
+    return () => window.removeEventListener('auth-change', handleAuthChange)
   }, [])
 
   // Save cart to localStorage
   useEffect(() => {
-    localStorage.setItem('cart', JSON.stringify(items))
+    localStorage.setItem(getCartKey(), JSON.stringify(items))
   }, [items])
 
   const addItem = (product: Product, quantity: number) => {

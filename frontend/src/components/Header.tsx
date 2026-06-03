@@ -244,6 +244,9 @@ export const Header: React.FC = () => {
                     </div>
                     <Link to="/profile" className="font-sans text-sm text-charcoal/70" onClick={() => setMenuOpen(false)}>Hồ sơ cá nhân</Link>
                     <Link to="/my-orders" className="font-sans text-sm text-charcoal/70" onClick={() => setMenuOpen(false)}>Lịch sử đơn hàng</Link>
+                    {user.role === 'admin' && (
+                      <Link to="/admin" className="font-sans text-sm font-bold text-primary" onClick={() => setMenuOpen(false)}>Quản trị (Admin)</Link>
+                    )}
                     <button onClick={() => { setMenuOpen(false); logout(); success('Đăng xuất thành công'); navigate('/'); }} className="text-left font-sans text-sm text-charcoal/70">Đăng xuất</button>
                   </div>
                 ) : (
