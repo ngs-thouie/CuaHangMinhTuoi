@@ -44,7 +44,7 @@ export const Header: React.FC = () => {
         <div className="flex items-center justify-between h-20">
           {/* Logo */}
           <Link to="/" className="flex items-center gap-3">
-            <span className="font-serif text-2xl font-semibold tracking-wide text-charcoal">
+            <span className="font-serif text-xl sm:text-2xl font-semibold tracking-wide text-charcoal whitespace-nowrap">
               Cửa hàng Minh Tươi
             </span>
           </Link>
@@ -141,7 +141,7 @@ export const Header: React.FC = () => {
 
               {/* Notification Dropdown */}
               {notifOpen && (
-                <div className="absolute top-full right-0 mt-4 w-80 bg-white border border-sand shadow-2xl rounded-sm z-50 overflow-hidden animate-slide-up">
+                <div className="absolute top-full -right-12 sm:right-0 mt-4 w-[85vw] sm:w-80 bg-white border border-sand shadow-2xl rounded-sm z-50 overflow-hidden animate-slide-up">
                   <div className="bg-primary/10 px-4 py-3 border-b border-sand">
                     <h3 className="font-serif text-charcoal font-medium">Thông báo từ cửa hàng</h3>
                   </div>

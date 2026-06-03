@@ -39,7 +39,7 @@ export const AdminChatDropdown: React.FC<AdminChatDropdownProps> = ({ isOpen, on
   if (!isOpen) return null
 
   return (
-    <div className="absolute top-full right-0 mt-4 w-80 md:w-96 bg-white border border-sand shadow-2xl rounded-sm z-50 overflow-hidden animate-slide-up flex flex-col h-[500px]">
+    <div className="absolute top-full -right-24 sm:right-0 mt-4 w-[90vw] sm:w-80 md:w-96 bg-white border border-sand shadow-2xl rounded-sm z-50 overflow-hidden animate-slide-up flex flex-col h-[500px]">
       <div className="bg-primary/10 px-4 py-3 border-b border-sand flex justify-between items-center">
         <h3 className="font-serif text-charcoal font-medium">Tin nhắn Khách hàng</h3>
       </div>
