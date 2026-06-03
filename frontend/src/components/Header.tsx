@@ -85,8 +85,10 @@ export const Header: React.FC = () => {
             )}
           </nav>
 
-          {/* Actions */}
-          <div className="hidden md:flex items-center gap-6">
+          {/* Actions & Mobile Menu */}
+          <div className="flex items-center gap-3 sm:gap-5 md:gap-6">
+            {/* Desktop Auth */}
+            <div className="hidden md:flex items-center gap-6">
             {user ? (
               <div className="relative group">
                 <button className="flex items-center gap-2 outline-none">
@@ -112,6 +114,7 @@ export const Header: React.FC = () => {
                 Đăng nhập
               </Link>
             )}
+            </div>
 
             {/* Admin Message Icon */}
             {user?.role === 'admin' && (
@@ -179,10 +182,9 @@ export const Header: React.FC = () => {
                 </span>
               )}
             </Link>
-          </div>
 
-          {/* Mobile menu button */}
-          <button
+            {/* Mobile menu button */}
+            <button
             onClick={() => setMenuOpen(!menuOpen)}
             className="md:hidden p-2"
           >
@@ -194,6 +196,7 @@ export const Header: React.FC = () => {
               )}
             </svg>
           </button>
+          </div>
         </div>
 
         {/* Mobile Navigation */}
