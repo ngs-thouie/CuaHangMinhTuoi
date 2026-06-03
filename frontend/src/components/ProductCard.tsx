@@ -1,4 +1,5 @@
 import React from 'react'
+import { useNavigate } from 'react-router-dom'
 import { Product } from '../types'
 import { useCart } from '../context/CartContext'
 import { useToast } from '../context/ToastContext'
@@ -9,6 +10,7 @@ interface ProductCardProps {
 }
 
 export const ProductCard: React.FC<ProductCardProps> = ({ product, onClick }) => {
+  const navigate = useNavigate()
   const { addItem } = useCart()
   const { success } = useToast()
   const [quantity, setQuantity] = React.useState(1)
@@ -18,6 +20,12 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, onClick }) =>
     addItem(product, quantity)
     setQuantity(1)
     success(`Đã thêm ${quantity} ${product.name} vào giỏ hàng`)
+  }
+
+  const handleBuyNow = (e: React.MouseEvent) => {
+    e.stopPropagation()
+    addItem(product, quantity)
+    navigate('/checkout')
   }
 
   return (
@@ -77,12 +85,20 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, onClick }) =>
           </div>
         </div>
 
-        <button
-          onClick={handleAddToCart}
-          className="w-full mt-3 bg-primary text-white py-2.5 font-sans text-sm font-medium tracking-wide hover:bg-primary-dark transition-colors duration-300"
-        >
-          Thêm vào giỏ
-        </button>
+        <div className="flex items-center gap-2 mt-3">
+          <button
+            onClick={handleAddToCart}
+            className="flex-1 bg-white border border-primary text-primary py-2.5 font-sans text-xs sm:text-sm font-medium tracking-wide hover:bg-primary/5 transition-colors duration-300"
+          >
+            Thêm vào giỏ
+          </button>
+          <button
+            onClick={handleBuyNow}
+            className="flex-1 bg-primary border border-primary text-white py-2.5 font-sans text-xs sm:text-sm font-medium tracking-wide hover:bg-primary-dark transition-colors duration-300"
+          >
+            Mua ngay
+          </button>
+        </div>
       </div>
     </div>
   )
