@@ -88,7 +88,7 @@ export const ChatWidget: React.FC = () => {
 
       {/* Chat Window */}
       {isOpen && (
-        <div className="fixed bottom-24 right-6 w-80 md:w-96 bg-white border border-sand shadow-2xl rounded-sm overflow-hidden z-50 flex flex-col h-[500px] max-h-[70vh] animate-slide-up">
+        <div className="fixed bottom-24 right-0 sm:right-6 w-[100vw] sm:w-80 md:w-96 bg-white border-t border-x sm:border border-sand shadow-2xl sm:rounded-sm overflow-hidden z-50 flex flex-col h-[70vh] sm:h-[500px] max-h-[80vh] animate-slide-up">
           <div className="bg-primary text-white px-4 py-3 flex items-center justify-between">
             <h3 className="font-serif text-lg">Hỗ Trợ Khách Hàng</h3>
           </div>

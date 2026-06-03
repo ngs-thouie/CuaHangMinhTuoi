@@ -60,7 +60,7 @@ const ChatWindowBox: React.FC<{
   }
 
   return (
-    <div className="w-[330px] h-[450px] max-h-[80vh] bg-white border border-sand shadow-2xl rounded-t-lg flex flex-col overflow-hidden animate-slide-up">
+    <div className="w-[100vw] sm:w-[330px] h-[70vh] sm:h-[450px] max-h-[80vh] bg-white border-t border-x border-sand shadow-2xl sm:rounded-t-lg flex flex-col overflow-hidden animate-slide-up">
       {/* Header */}
       <div className="bg-primary px-3 py-2 flex items-center justify-between shadow-sm z-10 cursor-pointer" onClick={onMinimize}>
         <div className="flex items-center gap-2 overflow-hidden flex-1">
@@ -215,7 +215,7 @@ export const AdminChatManager: React.FC = () => {
       </div>
 
       {/* Container for Open Windows */}
-      <div className="fixed bottom-0 right-28 flex flex-row-reverse gap-4 z-[9999] items-end pointer-events-none">
+      <div className="fixed bottom-0 right-0 sm:right-28 flex flex-row-reverse gap-4 z-[9999] items-end pointer-events-none">
         {openChats.map(c => (
           <div key={c.user._id} className="pointer-events-auto">
             <ChatWindowBox 
