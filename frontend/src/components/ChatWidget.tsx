@@ -85,7 +85,8 @@ export const ChatWidget: React.FC = () => {
       {/* Floating Button */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="fixed bottom-6 right-6 w-14 h-14 bg-primary text-white rounded-full shadow-lg flex items-center justify-center hover:bg-primary-dark transition-all transform hover:scale-105 z-50"
+        className="fixed bottom-6 right-6 w-14 h-14 bg-primary text-white rounded-full shadow-lg flex items-center justify-center z-[9999]"
+        style={{ position: 'fixed', bottom: '24px', right: '24px' }}
       >
         {unreadCount > 0 && !isOpen && (
           <>
@@ -108,7 +109,10 @@ export const ChatWidget: React.FC = () => {
 
       {/* Chat Window */}
       {isOpen && (
-        <div className="fixed bottom-24 right-0 sm:right-6 w-[100vw] sm:w-80 md:w-96 bg-white border-t border-x sm:border border-sand shadow-2xl sm:rounded-sm overflow-hidden z-50 flex flex-col h-[70vh] sm:h-[500px] max-h-[80vh] animate-slide-up">
+        <div 
+          className="fixed bottom-24 right-0 sm:right-6 w-[100vw] sm:w-80 md:w-96 bg-white border-t border-x sm:border border-sand shadow-2xl sm:rounded-sm overflow-hidden z-50 flex flex-col h-[70vh] sm:h-[500px] max-h-[80vh] animate-slide-up"
+          style={{ position: 'fixed', bottom: '96px', right: '24px' }}
+        >
           <div className="bg-primary text-white px-4 py-3 flex items-center justify-between">
             <h3 className="font-serif text-lg">Hỗ Trợ Khách Hàng</h3>
           </div>
