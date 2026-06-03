@@ -24,7 +24,7 @@ export const AdminChatDropdown: React.FC<AdminChatDropdownProps> = ({ isOpen, on
     }
     
     fetchT()
-    const it = setInterval(fetchT, 10000)
+    const it = setInterval(fetchT, 5000)
     return () => clearInterval(it)
   }, [isOpen, user])
 
@@ -57,9 +57,18 @@ export const AdminChatDropdown: React.FC<AdminChatDropdownProps> = ({ isOpen, on
                 {t.name?.charAt(0).toUpperCase()}
               </div>
               <div className="flex-1 min-w-0">
-                <p className="font-sans font-medium text-charcoal text-sm truncate">{t.name}</p>
-                <p className="font-sans text-xs text-charcoal/60 truncate mt-0.5">{t.email}</p>
+                <p className={`font-sans text-sm truncate ${t.unreadCount > 0 ? 'font-bold text-charcoal' : 'font-medium text-charcoal'}`}>{t.name}</p>
+                {t.latestMessage && (
+                  <p className={`font-sans text-xs truncate mt-0.5 ${t.unreadCount > 0 ? 'font-medium text-charcoal' : 'text-charcoal/60'}`}>
+                    {t.latestMessage.senderId === user?.id ? 'Bạn: ' : ''}{t.latestMessage.content}
+                  </p>
+                )}
               </div>
+              {t.unreadCount > 0 && (
+                <div className="w-5 h-5 rounded-full bg-red-500 text-white flex items-center justify-center font-sans text-[10px] font-bold shrink-0">
+                  {t.unreadCount}
+                </div>
+              )}
             </button>
           ))
         )}

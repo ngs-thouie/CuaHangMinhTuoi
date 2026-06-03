@@ -24,6 +24,11 @@ export interface Message {
 }
 
 export const messageService = {
+  getUnreadCount: async () => {
+    const res = await API.get('/messages/unread-count')
+    return res.data.count
+  },
+
   // Customer routes
   getMessages: async (): Promise<Message[]> => {
     const response = await API.get('/messages')

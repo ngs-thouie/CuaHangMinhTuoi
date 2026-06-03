@@ -16,6 +16,12 @@ export const getMessages = async (req: Request, res: Response) => {
       ]
     }).sort({ createdAt: 1 })
 
+    // Mark as read
+    await Message.updateMany(
+      { receiverId: userId, read: false },
+      { $set: { read: true } }
+    )
+
     res.json(messages)
   } catch (error) {
     res.status(500).json({ error: 'Server error' })
@@ -43,6 +49,24 @@ export const sendMessage = async (req: Request, res: Response) => {
   }
 }
 
+// Get global unread count
+export const getUnreadCount = async (req: Request, res: Response) => {
+  try {
+    const userId = req.userId
+    const role = req.userRole
+
+    let count = 0
+    if (role === 'admin') {
+      count = await Message.countDocuments({ receiverId: null, read: false })
+    } else if (userId) {
+      count = await Message.countDocuments({ receiverId: userId, read: false })
+    }
+    res.json({ count })
+  } catch (error) {
+    res.status(500).json({ error: 'Server error' })
+  }
+}
+
 // ---------------- Admin Routes ----------------
 
 // Get all unique customers who have messaged
@@ -59,7 +83,35 @@ export const getChatThreads = async (req: Request, res: Response) => {
       role: 'customer'
     }).select('name email')
 
-    res.json(users)
+    const threads = await Promise.all(users.map(async (user) => {
+      const latestMessage = await Message.findOne({
+        $or: [
+          { senderId: user._id },
+          { receiverId: user._id }
+        ]
+      }).sort({ createdAt: -1 })
+      
+      const unreadCount = await Message.countDocuments({
+        senderId: user._id,
+        receiverId: null,
+        read: false
+      })
+
+      return {
+        ...user.toObject(),
+        latestMessage,
+        unreadCount
+      }
+    }))
+
+    // Sort by latest message date descending
+    threads.sort((a, b) => {
+      const dateA = a.latestMessage ? new Date(a.latestMessage.createdAt).getTime() : 0
+      const dateB = b.latestMessage ? new Date(b.latestMessage.createdAt).getTime() : 0
+      return dateB - dateA
+    })
+
+    res.json(threads)
   } catch (error) {
     console.error(error)
     res.status(500).json({ error: 'Server error' })

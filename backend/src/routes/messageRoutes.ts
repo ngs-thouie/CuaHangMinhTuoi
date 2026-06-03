@@ -5,10 +5,14 @@ import {
   sendMessage,
   getChatThreads,
   getAdminMessages,
-  sendAdminMessage
+  sendAdminMessage,
+  getUnreadCount
 } from '../controllers/messageController.js'
 
 const router = express.Router()
+
+// Global unread count (for both customer and admin)
+router.get('/unread-count', authMiddleware, getUnreadCount)
 
 // Customer routes
 router.get('/', authMiddleware, getMessages)

@@ -9,6 +9,7 @@ export const ChatWidget: React.FC = () => {
   const [messages, setMessages] = useState<Message[]>([])
   const [input, setInput] = useState('')
   const [loading, setLoading] = useState(false)
+  const [unreadCount, setUnreadCount] = useState(0)
   const messagesEndRef = useRef<HTMLDivElement>(null)
   
   const location = useLocation()
@@ -17,6 +18,17 @@ export const ChatWidget: React.FC = () => {
   useEffect(() => {
     setUser(authService.getCurrentUser())
   }, [location])
+
+  // Poll for unread count globally
+  useEffect(() => {
+    let int: ReturnType<typeof setInterval>
+    if (user?.role === 'customer') {
+      const fetchU = async () => { try { setUnreadCount(await messageService.getUnreadCount()) } catch(e){} }
+      fetchU()
+      int = setInterval(fetchU, 5000)
+    }
+    return () => { if(int) clearInterval(int) }
+  }, [user])
 
   // Polling for messages
   useEffect(() => {
@@ -73,8 +85,16 @@ export const ChatWidget: React.FC = () => {
       {/* Floating Button */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="fixed bottom-6 right-6 w-14 h-14 bg-primary text-white rounded-full shadow-lg flex items-center justify-center hover:bg-primary-dark transition-all transform hover:scale-105 z-50"
+        className="fixed bottom-6 right-6 w-14 h-14 bg-primary text-white rounded-full shadow-lg flex items-center justify-center hover:bg-primary-dark transition-all transform hover:scale-105 z-50 relative"
       >
+        {unreadCount > 0 && !isOpen && (
+          <>
+            <span className="absolute top-0 right-0 md:hidden bg-red-500 text-white rounded-full w-3.5 h-3.5 shadow-sm border-2 border-white"></span>
+            <span className="absolute -top-1 -right-1 hidden md:flex bg-red-500 text-white rounded-full min-w-[20px] h-[20px] text-xs items-center justify-center font-sans font-bold px-1 shadow-sm border-2 border-white">
+              {unreadCount > 99 ? '99+' : unreadCount}
+            </span>
+          </>
+        )}
         {isOpen ? (
           <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />

@@ -4,6 +4,7 @@ import { useCart } from '../context/CartContext'
 import { useAuth } from '../hooks/useAuth'
 import { useToast } from '../context/ToastContext'
 import { notificationService, Notification } from '../services/notificationService'
+import { messageService } from '../services/messageService'
 import { AdminChatDropdown } from './AdminChatDropdown'
 
 export const Header: React.FC = () => {
@@ -17,13 +18,20 @@ export const Header: React.FC = () => {
   const notifRef = useRef<HTMLDivElement>(null)
   const [chatOpen, setChatOpen] = useState(false)
   const chatRef = useRef<HTMLDivElement>(null)
+  const [unreadCount, setUnreadCount] = useState(0)
 
   useEffect(() => {
     const fetchN = async () => { try { setNotifications(await notificationService.getNotifications()) } catch(e){} }
+    const fetchU = async () => {
+      if (user?.role === 'admin') {
+        try { setUnreadCount(await messageService.getUnreadCount()) } catch(e){}
+      }
+    }
     fetchN()
-    const int = setInterval(fetchN, 10000)
+    fetchU()
+    const int = setInterval(() => { fetchN(); fetchU() }, 5000)
     return () => clearInterval(int)
-  }, [])
+  }, [user])
 
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
@@ -121,8 +129,18 @@ export const Header: React.FC = () => {
               <div className="relative" ref={chatRef}>
                 <button onClick={() => setChatOpen(!chatOpen)} className="relative group p-1 flex items-center" title="Tin nhắn">
                   <svg className="w-5 h-5 text-charcoal group-hover:text-primary transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
                   </svg>
+                  {unreadCount > 0 && (
+                    <>
+                      {/* Red dot for mobile */}
+                      <span className="absolute -top-1 -right-1 md:hidden bg-red-500 text-white rounded-full w-2.5 h-2.5 shadow-sm border border-white"></span>
+                      {/* Badge with number for desktop */}
+                      <span className="absolute -top-1.5 -right-1.5 hidden md:flex bg-red-500 text-white rounded-full min-w-[18px] h-[18px] text-[10px] items-center justify-center font-sans font-medium px-1 shadow-sm border border-white">
+                        {unreadCount > 99 ? '99+' : unreadCount}
+                      </span>
+                    </>
+                  )}
                 </button>
                 <AdminChatDropdown isOpen={chatOpen} onClose={() => setChatOpen(false)} />
               </div>
