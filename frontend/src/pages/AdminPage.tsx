@@ -41,6 +41,32 @@ const emptyProduct = ():Partial<Product> => ({name:'',description:'',price:0,cat
 const ProductForm:React.FC<{initial?:Partial<Product>;onSave:(p:Partial<Product>)=>void;saving:boolean}> = ({initial,onSave,saving}) => {
   const [f,setF] = useState<Partial<Product>>(initial||emptyProduct())
   const set = (k:string,v:any) => setF(prev=>({...prev,[k]:v}))
+
+  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+    const reader = new FileReader()
+    reader.onload = (event) => {
+      const img = new Image()
+      img.onload = () => {
+        const canvas = document.createElement('canvas')
+        let { width, height } = img
+        const MAX_DIM = 800
+        if (width > height) {
+          if (width > MAX_DIM) { height *= MAX_DIM / width; width = MAX_DIM }
+        } else {
+          if (height > MAX_DIM) { width *= MAX_DIM / height; height = MAX_DIM }
+        }
+        canvas.width = width
+        canvas.height = height
+        const ctx = canvas.getContext('2d')
+        ctx?.drawImage(img, 0, 0, width, height)
+        set('image', canvas.toDataURL('image/jpeg', 0.8))
+      }
+      img.src = event.target?.result as string
+    }
+    reader.readAsDataURL(file)
+  }
   return (
     <form onSubmit={e=>{e.preventDefault();onSave(f)}} className="space-y-4">
       <div><label className="font-sans text-xs text-charcoal/60 block mb-1">Tên sản phẩm *</label><input className={inputCls} value={f.name||''} onChange={e=>set('name',e.target.value)} required/></div>
@@ -55,7 +81,17 @@ const ProductForm:React.FC<{initial?:Partial<Product>;onSave:(p:Partial<Product>
           <div><label className="font-sans text-xs text-charcoal/60 block mb-1">Số món</label><input type="number" className={inputCls} value={f.servings||''} onChange={e=>set('servings',Number(e.target.value))}/></div>
         </div>
       )}
-      <div><label className="font-sans text-xs text-charcoal/60 block mb-1">URL Hình ảnh</label><input className={inputCls} value={f.image||''} onChange={e=>set('image',e.target.value)} placeholder="https://..."/></div>
+      <div>
+        <label className="font-sans text-xs text-charcoal/60 block mb-1">Hình ảnh (URL hoặc Tải lên từ máy)</label>
+        <div className="flex gap-2">
+          <input className={inputCls} value={f.image||''} onChange={e=>set('image',e.target.value)} placeholder="https://..."/>
+          <label className="cursor-pointer bg-sand px-4 flex items-center justify-center font-sans text-sm hover:bg-sand/80 transition-colors shrink-0">
+            Tải lên
+            <input type="file" accept="image/*" className="hidden" onChange={handleImageUpload} />
+          </label>
+        </div>
+        {f.image && <img src={f.image} alt="Preview" className="mt-2 h-20 w-20 object-cover border border-sand" />}
+      </div>
       <div className="flex items-center gap-2"><input type="checkbox" checked={f.available!==false} onChange={e=>set('available',e.target.checked)} id="avail"/><label htmlFor="avail" className="font-sans text-sm text-charcoal/70">Còn hàng</label></div>
       <button type="submit" disabled={saving} className={btnPrimary+" w-full disabled:opacity-50"}>{saving?'Đang lưu...':'Lưu sản phẩm'}</button>
     </form>
